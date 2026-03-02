@@ -1,0 +1,77 @@
+import matplotlib.pyplot as plt
+
+from mpl_toolkits.mplot3d import Axes3D
+
+import torch
+
+import numpy as np
+
+
+
+# 1. 3D 시각화용 환경 설정
+
+class VisualEnv3D:
+
+    def __init__(self):
+
+        # 적 미사일: 빨간색 포물선 궤적
+
+        self.t = np.linspace(0, 5, 50)
+
+        self.target_x = 100 - (self.t * 20)
+
+        self.target_y = 100 - (self.t * 15)
+
+        self.target_z = -0.5 * 9.8 * self.t**2 + 30 * self.t + 50
+
+       
+
+        # 요격 미사일: AI가 추적하는 파란색 궤적 (학습 전이라 조금 어설프게 따라가는 모습)
+
+        self.inter_x = self.target_x + np.random.normal(0, 5, 50)
+
+        self.inter_y = self.target_y + np.random.normal(0, 5, 50)
+
+        self.inter_z = self.target_z - 10 + (self.t * 2)
+
+
+
+    def draw(self):
+
+        fig = plt.figure(figsize=(12, 8))
+
+        ax = fig.add_subplot(111, projection='3d')
+
+
+
+        # 적 미사일 궤적 (Red)
+
+        ax.plot(self.target_x, self.target_y, self.target_z,
+
+                label='Enemy Missile (Target)', color='red', linewidth=2, marker='o', markersize=3)
+
+       
+
+        # 요격 미사일 궤적 (Blue)
+
+        ax.plot(self.inter_x, self.inter_y, self.inter_z,
+
+                label='Interceptor AI', color='blue', linewidth=2, alpha=0.7)
+
+
+
+        # 요격 지점 예상 (충돌 포인트)
+
+        ax.scatter(self.target_x[-1], self.target_y[-1], self.target_z[-1],
+
+                   color='orange', s=200, marker='*', label='Interception Point')
+
+
+
+        ax.set_title("3D Missile Interception Simulation (PyTorch + GPU)")
+
+        ax.set_xlabel("X (Distance)")
+
+        ax.set_ylabel("Y (Width)")
+
+        ax.set_zlabel("Z (Altitude)")
